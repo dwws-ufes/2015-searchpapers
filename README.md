@@ -1,6 +1,3 @@
-# 2015-searchpapers
-Assignment for the 2015 edition of the "Web Development and the Semantic Web" course, by Camila Zacche de Aguiar and Daisy Ferreira Brito
-
 # Projeto SearchPapers
 - Nome: SearchPapers
 - Participantes: Camila Zacché de Aguiar e Daisy Ferreira Brito
@@ -18,6 +15,7 @@ Assignment for the 2015 edition of the "Web Development and the Semantic Web" co
 + Configurar WildFly
 - Acesse o arquivo standalone.xml no diretorio do WildFly. Caminho: wildfly-8.2.0.Final ▸ standalone ▸ configuration
 - Inclua dentro da tag datasources as configurações de acesso ao banco de dados do projeto SearchPapers
+
 
 <datasource jta="true" jndi-name="java:jboss/datasources/SearchPapers" pool-name="SearchPapersPool" enabled="true" use-java-context="true">
     <connection-url>jdbc:mysql://localhost:3306/searchpapers</connection-url>
