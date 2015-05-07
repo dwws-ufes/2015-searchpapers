@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      template="/resource/template/decorator.xhtml">
+      
+      <ui:define name="title"><h:outputText value="#{msgs['title.welcome']}" /></ui:define>
+      
+      <ui:define name="contents">
+
+      	
+<h1><h:outputText value="#{msgs['Paper.title.form']}" /></h1>
+    <hr/>
+    <br/>
+	
+<p:fieldset legend="Keywords" toggleable="true" toggleSpeed="500">
+<h:form id="formKeyword">
+       <h:panelGrid columns="3" >
+				<h:outputLabel for="word">Word:</h:outputLabel>
+				<h:inputText id="word" value="#{paperController.keyword.word}" size="30" required="true" label="word" requiredMessage="É necessário preencher word"/>
+				<p:message for="word" />
+				
+				<h:commandButton value="salvar" id="submitKeyword">	
+				  <f:ajax listener="#{paperController.cadastrarKeyword}" execute="@form" render="formKeyword :tableKeywords" event="click"/>	
+				</h:commandButton>			
+		</h:panelGrid>
+ 
+        <h:dataTable id="tableKeywords" value="#{paperController.arrayKeywords}" var="keyword" rendered="#{paperController.arrayKeywords.size() > 0}" border="1" cellspacing="0">
+				<h:column>
+					<f:facet name="header">Id</f:facet>
+					<h:inputText value="#{keyword.id}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">Word</f:facet>
+					<h:inputText value="#{keyword.word}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">Remove</f:facet>
+					<h:commandButton value="deletar" action="#{paperController.deletarKeyword(keyword)}" immediate="true"/>	
+				</h:column>
+		</h:dataTable> 
+</h:form>		
+</p:fieldset>
+			
+	<br/>
+	
+			
+<p:fieldset legend="Author" toggleable="true" toggleSpeed="500">
+<h:form id="formAuthor">      
+        <h:panelGrid id="panelAuthor" columns="3" >
+				<h:outputLabel for="name">name:</h:outputLabel>
+				<h:inputText id="name" value="#{paperController.author.name}" size="30" required="true" label="name" requiredMessage="É necessário preencher o nome."/>
+				<p:message for="name" />
+
+				<h:outputLabel for="email">Email:</h:outputLabel>
+				<h:inputText id="email" value="#{paperController.author.email}" size="30" readonly="#{paperController.readOnly}" label="email" validatorMessage="Não é um endereço de email válido!">
+					  <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />	
+				</h:inputText> 
+				<p:message for="email" />
+				
+				<h:outputLabel for="institute">institute:</h:outputLabel>
+				<h:inputText id="institute" value="#{paperController.institute.name}" size="30" required="true" label="name" requiredMessage="É necessário preencher o instituto"/>
+				<p:message for="institute" />
+
+				<h:commandButton value="salvar" id="submitAuthor">	
+				  <f:ajax listener="#{paperController.cadastrarAuthor}" execute="@form" render="formAuthor :tableAuthors" event="click"/>	
+				</h:commandButton>	
+				<br/>
+				<br/>					
+		</h:panelGrid>
+ 
+        <h:dataTable id="tableAuthors" value="#{paperController.arrayAuthors}" var="author" rendered="#{paperController.arrayAuthors.size() > 0}" border="1" cellspacing="0">
+				<h:column>
+					<f:facet name="header">Id</f:facet>
+					<h:inputText value="#{author.id}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">Name</f:facet>
+					<h:inputText value="#{author.name}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">email</f:facet>
+					<h:inputText value="#{author.email}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">institute id</f:facet>
+					<h:inputText value="#{author.institute.id}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">institute</f:facet>
+					<h:inputText value="#{author.institute.name}" />
+				</h:column>
+				
+				<h:column>
+					<f:facet name="header">Remove</f:facet>
+					<h:commandButton value="deletar" action="#{paperController.deletarAuthor(author)}" immediate="true"/>	
+				</h:column>
+			</h:dataTable>
+</h:form>			
+</p:fieldset> 				
+      
+      <br/>
+      
+<p:fieldset legend="Paper" style="margin-bottom:20px">
+	<h:form id="formPaper">
+	
+	<p:growl id="msgOk" showDetail="false" />
+<p:growl id="msgErro" showDetail="false" />
+
+	            <h:panelGrid columns="3" >
+					
+					<h:outputLabel for="title">Title:</h:outputLabel>
+					<h:inputText id="title" value="#{paperController.paper.title}" size="30" required="true" label="name" requiredMessage="É necessário preencher o nome."/>
+					<p:message for="title" />
+					
+					<h:outputLabel for="year">Year:</h:outputLabel>
+					<h:inputText id="year" value="#{paperController.paper.year}" size="30" required="true" label="name" requiredMessage="É necessário preencher year"/>
+					<p:message for="year" />
+								
+					<h:outputLabel for="summary">Summary:</h:outputLabel>
+					<p:inputTextarea id="summary" value="#{paperController.paper.summary}" cols="50" rows="10" counter="display" maxlength="255" counterTemplate="{0} characters remaining." autoResize="false" required="true" label="summary" requiredMessage="É necessário preencher sumario"/>	
+					<p:message for="summary" />
+					
+					<br/>
+					<h:outputText id="display" />						
+				</h:panelGrid>
+				
+				
+				<h:commandButton value="salvar Artigo" action="#{paperController.cadastrarPaper}">	
+				</h:commandButton>
+								
+	</h:form>
+</p:fieldset>		  
+     
+<hr/>
+    <br/>
+      
+      </ui:define>
+      
+</ui:composition>

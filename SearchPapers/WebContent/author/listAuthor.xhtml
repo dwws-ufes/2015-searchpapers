@@ -1,0 +1,119 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                template="/resource/template/decorator.xhtml">
+
+    <ui:define name="titulo"><h:outputText value="#{msgs['title.welcome']}" /></ui:define>
+
+	<ui:define name="contents">
+		      <h1><h:outputText value="#{msgs['Author.title.list']}" /></h1>
+
+		<br/>
+		<br/>
+        <div class="crud">
+            <!-- Filter bar: used to filter the listing (displayed when there is at least one filter available). -->
+            <h:form id="filterForm">
+            <p:growl id="msgOk" showDetail="false" />
+            
+                <h:panelGroup id="filterBar" >
+                    <div class="crudFilterBar">
+                    <h:panelGrid id="fields" columns="10" >
+                        <h:outputText value="#{msgs['crud.text.filter']} " />
+                         <p:selectOneMenu id="filter" value="#{authorController.filter}" style="width:125px" immediate="true">
+				            <f:selectItem itemLabel="" itemValue="" />
+				            <f:selectItem itemLabel="ID" itemValue="id" />
+				            <f:selectItem itemLabel="Nome" itemValue="name" />
+				            <f:selectItem itemLabel="email" itemValue="email" />
+				            <f:selectItem itemLabel="Instituição" itemValue="institute" />
+				        <f:ajax event="change" execute="@form" render="@form :listingForm :buttonsForm" listener="#{authorController.cancelFilter}"/>
+				        </p:selectOneMenu>
+                        <h:outputText value=": " />&nbsp;
+                        
+                       <p:inputText id="filterText" size="20" required="false" value="#{authorController.valorFiltro}" />&nbsp;
+                       
+                       <!-- <p:inputText id="filterNumber" size="10" required="false" value="#{authorController.valorFiltro}" rendered="#{authorController.filter.equals('id')}" label="filterNumber"  converterMessage="É permitido apenas caracteres numéricos.">
+                          <f:convertNumber integerOnly="true" minIntegerDigits="1"  />                          
+                        </p:inputText>&nbsp; -->
+                        
+                        <p:selectOneMenu id="institute" required="false" value="#{authorController.institute}"  converter="generic" rendered="#{authorController.filter.equals('institute')}">
+                          <f:selectItems value="#{instituteController.institutes}" var="institute" itemLabel="#{institute.name}" itemValue="#{institute}"/>                         
+                        </p:selectOneMenu>	
+                                   
+                      <h:commandButton action="#{authorController.filtrar}" value="Pesquisar" validateClient="true" ajax="false"/>&nbsp;
+                      <h:commandButton action="#{authorController.cancelarFiltro}" value="Cancelar filtro" immediate="true"/>
+                      <p:hotkey bind="#{msgs['crud.hotkey.filterFocus']}" handler="if (findObjectById('filterForm:filterText') != null) findObjectById('filterForm:filterText').focus();" />
+                   
+                    </h:panelGrid>
+                    <!-- <p:message for="filterNumber" />-->
+                     <br/> 
+                    </div>
+                </h:panelGroup>
+            </h:form>
+        </div>
+
+ <!-- The listing form. -->
+            <h:form id="listingForm">
+                
+
+                <!-- The list of entities. -->
+                <h:panelGroup id="listing" >
+                    <p:dataTable
+                        widgetVar="listingTable"
+                        value="#{authorController.arrayAuthors}" 
+                        var="author" 
+                        rows="10" 
+                        rowsPerPageTemplate="5,10,20"
+                        lazy="true" 
+                        paginator="true" 
+                        selection="#{authorController.author}" 
+                        selectionMode="single" 
+                        rowKey="#{author.name}"
+                        paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}" 
+                        paginatorPosition="bottom" 
+                        loadingMessage="#{msgs['text.ajax.loading']}"                         
+                        emptyMessage="#{msgs['Author.text.noEntitiesFiltered']}"
+                        rowSelectListener="#{authorController.rowSelect}"
+                        >
+
+						<p:column headerText="#{msgs['Author.form.id']}">
+                            <h:outputText value="#{author.id}" />
+                        </p:column>
+                        
+                        <p:column headerText="#{msgs['Author.form.name']}">
+                            <h:outputText value="#{author.name}" />
+                        </p:column>
+                        
+                        <p:column headerText="#{msgs['Author.form.email']}">
+                            <h:outputText value="#{author.email}" />
+                        </p:column>
+                        
+
+                        <p:column headerText="#{msgs['Author.form.institute']}">
+                            <h:outputText value="#{author.institute.name}" rendered="#{author.institute != null}" />
+                        </p:column>
+                        
+                        <p:ajax event="rowSelect" listener="#{authorController.rowSelect}" render="@form :listingForm :buttonsForm" update=":listingForm :buttonsForm" />
+                    </p:dataTable>
+                </h:panelGroup>
+            </h:form>
+
+            <!-- Buttons shown below the listing. -->
+            <h:form id="buttonsForm">
+                <div class="crudButtons">
+                
+                <h:commandButton action="#{authorController.novo}" value="Novo" /> &nbsp;
+			    <h:commandButton action="#{authorController.editar}" value="Editar" disabled="#{authorController.selectedEntity == null}" />&nbsp;					
+                <h:commandButton action="#{authorController.deletar}" value="Deletar" disabled="#{authorController.selectedEntity == null}" /> &nbsp;
+                
+                </div>
+            </h:form>
+
+        
+
+        
+	</ui:define>
+  
+</ui:composition>

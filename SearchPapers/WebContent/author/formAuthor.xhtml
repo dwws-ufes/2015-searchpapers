@@ -1,0 +1,69 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                template="/resource/template/decorator.xhtml">
+
+    <ui:define name="titulo">Cadastrar Autor</ui:define>
+
+	<ui:define name="contents">
+		<h1><h:outputText value="#{msgs['Author.title.list']}" /></h1>
+		
+<hr />
+<br/>
+		
+	<h:form id="formAuthor">
+		<p:growl id="msgOk" showDetail="false" />
+
+			
+
+			<p>
+				<h:panelGrid id="fields" columns="3">
+			    	<h:outputLabel for="name">Id:</h:outputLabel>
+					<h:inputText id="id" value="#{authorController.author.id}" label="id" size="30" readonly="true" />
+					<p:message for="id" />
+					
+					<h:outputLabel for="name">Name:</h:outputLabel>
+					<h:inputText id="name" value="#{authorController.author.name}" size="30" readonly="#{authorController.readOnly}" required="true" label="name" requiredMessage="É necessário preencher o nome.">
+				    	
+					</h:inputText>					
+			    	 <p:message for="name" />
+				 
+					<h:outputLabel for="email">Email:</h:outputLabel>
+					<h:inputText id="email" value="#{authorController.author.email}" size="30" readonly="#{authorController.readOnly}" label="email" validatorMessage="Não é um endereço de email válido!">
+					 
+					  <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+ 
+					</h:inputText> 
+					<p:message for="email" />
+					<h:outputLabel for="institute">Institute:</h:outputLabel>
+					<p:selectOneMenu id="institute" required="false" value="#{authorController.author.institute}"  converter="generic" >
+                          <f:selectItems value="#{instituteController.institutes}" var="institute" itemLabel="#{institute.name}" itemValue="#{institute}"/>
+                         
+                    </p:selectOneMenu>					
+				</h:panelGrid>
+			</p>
+			
+			<br/>
+			
+			 <!-- Buttons shown below the listing. -->
+            <h:form id="buttonsForm">
+                <div class="crudButtons">
+			      <h:commandButton  value="Salvar" action="#{authorController.salvar(authorController.author)}" /> &nbsp;&nbsp;
+			      <h:commandButton  value="Listar" action="#{authorController.listar}" immediate="true"/><p></p>			    
+                </div>
+            </h:form>
+
+			
+			<br/>
+			<hr />
+			
+			
+			
+		</h:form>
+
+	</ui:define>
+  
+</ui:composition>

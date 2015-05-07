@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      template="/resource/template/decoratorLogin.xhtml">
+      
+      <ui:define name="title"><h:outputText value="#{msgs['title.welcome']}" /></ui:define>
+      
+      <ui:define name="contents">
+      
+      <div class="post_box">
+            
+               <p align="justify">O Search Paper é um sistema colaborativo de cadastramento de paper para facilitar a organização e aprendizado de pesquisadores.</p>
+               <p align="justify">Considerando que o sistema é colaborativo e seletivo no que diz respeito aos papers publicados,
+               o acesso deve ser realizado por meio de um login, localizado abaixo. Caso seja um novo usuário, então realize seu cadastramento no link "Novo Usuário".</p>
+              <div class="cleaner"></div>
+     </div>
+            
+     <div class="post_box"> 
+     <h:form> 
+     <p:growl id="msgOk" showDetail="false" />
+     
+     <h:panelGrid columns="2">
+	 		
+	 		<p:fieldset toggleable="true" toggleSpeed="500">
+	 		<h3>Já sou cadastrado?</h3>
+	 	  <h:panelGrid columns="2"> 
+	 	    <p:outputLabel for="nomeUsuario" value="Nome Usuário:" /> 
+	 	    <p:inputText id="nomeUsuario" value="#{usuarioController.usuario.nome}" /> 
+	 	    <p:outputLabel for="senha" value="Senha:" /> 
+	 	    <p:password id="senha" value="#{usuarioController.usuario.senha}" /> 
+	 	    <p:commandButton value="Login" icon="ui-icon-star" action="#{usuarioController.login}" ajax="false"> </p:commandButton> 
+	 	  </h:panelGrid> 
+	 	  </p:fieldset>
+	 	  
+
+	 	  <p:fieldset toggleable="true" toggleSpeed="500">
+	 		<h3>Já sou cadastrado?</h3>
+	 	  <h:panelGrid columns="2"> 
+	 	    <p:outputLabel for="nomeUsuario2" value="Nome Usuário:" /> 
+	 	    <p:inputText id="nomeUsuario2" value="#{usuarioController.usuarioCadastro.nome}" /> 
+	 	    <p:outputLabel for="senha2" value="Senha:" /> 
+	 	    <p:password id="senha2" value="#{usuarioController.usuarioCadastro.senha}" /> 
+	 	    <p:commandButton value="Login" icon="ui-icon-star" action="#{usuarioController.salvar}" ajax="false"> </p:commandButton> 
+	 	  </h:panelGrid> 
+	 	  
+	 	  
+	 	  </p:fieldset>
+	 </h:panelGrid>	  
+	 	  
+ 		</h:form>
+ 	</div>
+ 		
+ 		</ui:define>
+      
+</ui:composition>

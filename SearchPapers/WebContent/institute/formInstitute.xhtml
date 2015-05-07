@@ -1,0 +1,55 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                template="/resource/template/decorator.xhtml">
+
+    <ui:define name="titulo">Cadastrar Autor</ui:define>
+
+	<ui:define name="contents">
+
+
+		
+	<h:form id="formInstitute">
+		<p:growl id="msgOk" showDetail="false" />
+		
+		<h1><h:outputText value="#{msgs['Institute.title.form']}" /></h1>
+		
+			<hr />
+			<br/>
+
+			<p>
+				<h:panelGrid columns="2">
+			    	<h:outputLabel for="name">Id:</h:outputLabel>
+					<h:inputText id="id" value="#{instituteController.institute.id}" size="30" readonly="true" />
+					<h:outputLabel for="name">Name:</h:outputLabel>
+					<h:inputText id="name" value="#{instituteController.institute.name}" size="30" readonly="#{instituteController.readOnly}" required="true" label="name" requiredMessage="É necessário preencher o nome da Instituição." />
+								
+					<br/> <p:message for="name" />							
+				</h:panelGrid>
+			</p>
+			
+			<br/>
+			
+			 <!-- Buttons shown below the listing. -->
+            <h:form id="buttonsForm">
+                <div class="crudButtons">
+			      <h:commandButton  value="Salvar" action="#{instituteController.salvar(instituteController.institute)}" /> &nbsp;&nbsp;
+			      <h:commandButton  value="Listar" action="#{instituteController.listar}" immediate="true"/><p></p>			    
+                </div>
+            </h:form>
+			<br/>
+			<br/>
+			<br/>
+			
+			<hr />
+			<br/>		
+			
+			
+		</h:form>
+
+	</ui:define>
+  
+</ui:composition>
