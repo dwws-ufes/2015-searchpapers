@@ -7,12 +7,12 @@
 # Configuração
 - Para configurar o projeto vc deve ter instalado e configurado o Eclipse com WildFly e MySql
 
-###Configurar MySql
+#####Configurar MySql
 - Crie um schema com o nome searchpapers
 - Crie um usuário searchpapers e senha searchpapers
 - Configure o privilégio desse usuário para acessar o schema searchpapers
 
-###Configurar WildFly
+#####Configurar WildFly
 - Acesse o arquivo standalone.xml no diretorio do WildFly. Caminho: wildfly-8.2.0.Final ▸ standalone ▸ configuration
 - Inclua dentro da tag datasources as configurações de acesso ao banco de dados do projeto SearchPapers
 
@@ -28,7 +28,7 @@
 ```
 
 
-###Importar projeto no Eclipse
+#####Importar projeto no Eclipse
 - Baixe o projeto do repositório github
 - Importe o projeto como um projeto Geral em existente projeto
 - Verifique se as propriedades do projeto estão corretas. Em Projects Facets deve utilizar:
