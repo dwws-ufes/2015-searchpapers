@@ -1,0 +1,103 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                template="/resource/template/decorator.xhtml">
+
+    <ui:define nome="titulo"><h:outputText value="#{msgs['title.welcome']}" /></ui:define>
+
+	<ui:define nome="contents">
+		      <h1><h:outputText value="#{msgs['usuario.title.list']}" /></h1>
+		
+		<hr />
+      <br/>	
+		
+        <div class="crud">
+            <!-- Filter bar: used to filter the listing (displayed when there is at least one filter available). -->
+            <h:form id="filterForm">
+              <p:growl id="msgOk" showDetail="false" />
+              
+                <h:panelGroup id="filterBar" >
+                    <div class="crudFilterBar">
+                    <h:panelGrid id="fields" columns="10" >
+                        <h:outputText value="#{msgs['crud.text.filter']} " />
+                         <p:selectOneMenu id="filter" value="#{usuarioController.filter}" style="width:125px">
+				            <f:selectItem itemLabel="" itemValue="" />
+				            <f:selectItem itemLabel="ID" itemValue="id" />
+				            <f:selectItem itemLabel="Nome" itemValue="nome" />
+				        <f:ajax event="change" execute="@form" render="@form :listingForm :buttonsForm" />
+				        </p:selectOneMenu>
+                        <h:outputText value=": " />&nbsp;
+                        
+                       <p:inputText id="filterText" size="20" required="false" value="#{usuarioController.valorFiltro}" />&nbsp;
+                        
+                      <h:commandButton action="#{usuarioController.filtrar}" value="Pesquisar" validateClient="true" ajax="false" />&nbsp;
+                      <h:commandButton action="#{usuarioController.cancelarFiltro}" value="Cancelar filtro" immediate="true" />
+                      <p:hotkey bind="#{msgs['crud.hotkey.filterFocus']}" handler="if (findObjectById('filterForm:filterText') != null) findObjectById('filterForm:filterText').focus();" />
+                   
+                   </h:panelGrid>
+                    
+                     <br/>
+                    </div>
+                </h:panelGroup>
+            </h:form>
+        </div>
+
+ <!-- The listing form. -->
+            <h:form id="listingForm">                
+
+                <!-- The list of entities. -->
+                <h:panelGroup id="listing" >
+                    <p:dataTable
+                        widgetVar="listingTable"
+                        value="#{usuarioController.arrayusuarios}" 
+                        var="usuario" 
+                        rows="10" 
+                        rowsPerPageTemplate="5,10,20"
+                        lazy="true" 
+                        paginator="true" 
+                        selection="#{usuarioController.usuario}" 
+                        selectionMode="single" 
+                        rowKey="#{usuario.nome}"
+                        paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}" 
+                        paginatorPosition="bottom" 
+                        loadingMessage="#{msgs['text.ajax.loading']}"                         
+                        emptyMessage="#{msgs['usuario.text.noEntitiesFiltered']}"
+                        rowSelectListener="#{usuarioController.rowSelect}"
+                        >
+
+						<p:column headerText="#{msgs['usuario.form.id']}">
+                            <h:outputText value="#{usuario.id}" />
+                        </p:column>
+                        
+                        <p:column headerText="#{msgs['usuario.form.nome']}">
+                            <h:outputText value="#{usuario.nome}" />
+                        </p:column>
+                       
+                        
+                        <p:ajax event="rowSelect" listener="#{usuarioController.rowSelect}" render="@form :listingForm :buttonsForm" update=":listingForm :buttonsForm" />
+                    </p:dataTable>
+                </h:panelGroup>
+            </h:form>
+
+            <!-- Buttons shown below the listing. -->
+            <h:form id="buttonsForm">
+                <div class="crudButtons">
+                
+                <h:commandButton action="#{usuarioController.novo}" value="Novo" /> &nbsp;
+                <h:commandButton action="#{usuarioController.editar}" value="Editar" disabled="#{usuarioController.selectedEntity == null}" />&nbsp;                
+                <h:commandButton action="#{usuarioController.deletar}" value="Deletar" disabled="#{usuarioController.selectedEntity == null}" /> &nbsp;
+                
+                </div>
+            </h:form>
+
+     <br/>
+     <hr/>
+        
+
+        
+	</ui:define>
+  
+</ui:composition>

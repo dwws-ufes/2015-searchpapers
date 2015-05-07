@@ -49,9 +49,6 @@ public class PaperServiceBean implements PaperService {
 		objeto = paperDAO.getById(objeto.getId());
 		if (objeto != null){
 			paperDAO.deletar(objeto);
-		}	
-		else {
-			//mensagem de erroooooo
 		}
 	}
 	

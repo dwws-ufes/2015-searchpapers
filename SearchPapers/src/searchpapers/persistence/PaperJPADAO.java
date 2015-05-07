@@ -17,9 +17,7 @@ import searchpapers.domain.Paper_;
 public class PaperJPADAO implements PaperDAO {
 	@PersistenceContext
 	private EntityManager entityManager;
-	
-	//@PersistenceContext
-    //private EntityTransaction entityTransaction;
+
 	
 	public Paper salvar(Paper objeto){
 		if (objeto.isPersistent()) {

@@ -50,9 +50,6 @@ public class KeywordServiceBean implements KeywordService {
 		objeto = keywordDAO.getById(objeto.getId());
 		if (objeto != null){
 			keywordDAO.deletar(objeto);
-		}	
-		else {
-			//mensagem de erroooooo
 		}
 	}
 	

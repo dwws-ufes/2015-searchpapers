@@ -11,6 +11,7 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
 
 import searchpapers.application.UsuarioService;
+import searchpapers.domain.Keyword;
 import searchpapers.domain.Usuario;
 import searchpapers.message.MessageController;
 
