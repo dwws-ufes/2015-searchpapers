@@ -5,6 +5,7 @@
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:o="http://omnifaces.org/ui"
      template="/resource/template/decorator.xhtml">
       
       <ui:define name="title"><h:outputText value="#{msgs['title.welcome']}" /></ui:define>
@@ -13,94 +14,48 @@
 
       <h1><h:outputText value="#{msgs['Paper.title.list']}" /></h1>
     <hr/>
-    <br/>
+    <br />
 
-	<div class="crud">
-            <!-- Filter bar: used to filter the listing (displayed when there is at least one filter available). -->
-            <h:form id="filterForm">
-            
-            <p:growl id="msgOk" showDetail="false" />
-            
-                <h:panelGroup id="filterBar" >
-                    <div class="crudFilterBar">
-                    <h:panelGrid id="fields" columns="10" >
-                        <h:outputText value="#{msgs['crud.text.filter']} " />
-                         <p:selectOneMenu id="filter" value="#{paperController.filter}" style="width:125px" immediate="true">
-				            <f:selectItem itemLabel="" itemValue="" />
-				            <f:selectItem itemLabel="Id" itemValue="id" />
-				            <f:selectItem itemLabel="Title" itemValue="title" />				            
-				        <f:ajax event="change" execute="@form" render="@form :listingForm :buttonsForm"/>
-				        
-				        </p:selectOneMenu> 
-                        <h:outputText value=": " />&nbsp;
-                        <p:inputText id="filterText" size="20" required="false" value="#{paperController.valorFiltro}"/>&nbsp;
-                                  
-                      <h:commandButton action="#{paperController.filtrar}" value="Pesquisar" validateClient="true" ajax="false"/>&nbsp;
-                      <h:commandButton action="#{paperController.cancelarFiltro}" value="Cancelar filtro" immediate="true"/>
-                      <p:hotkey bind="#{msgs['crud.hotkey.filterFocus']}" handler="if (findObjectById('filterForm:filterText') != null) findObjectById('filterForm:filterText').focus();" />
-                      
-                    </h:panelGrid>
-                    
-                     <br/> 
-                    </div>
-                </h:panelGroup>
-            </h:form>
-        </div>
-      	
-      	 
-
+<h:form id="frmNovo">
+   <div class="crudButtons">	   
+   		<p:commandButton id="btnNovo" icon="ui-icon-document" action="#{paperController.novo}" value="Novo Paper" />	
+   </div>
+</h:form>
 	
-		  <h:form id="listingForm">                
+	<br />
+	
+<h:form id="frmPapers">  
 
-                <!-- The list of entities. -->
-                <h:panelGroup id="listing" >
-                    <p:dataTable
-                        widgetVar="listingTable"
-                        value="#{paperController.arrayPapers}" 
-                        var="paper" 
-                        rows="10" 
-                        rowsPerPageTemplate="5,10,20"
-                        lazy="true" 
-                        paginator="true" 
-                        selection="#{paperController.paper}" 
-                        selectionMode="single" 
-                        rowKey="#{paper.title}"
-                        paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}" 
-                        paginatorPosition="bottom" 
-                        loadingMessage="#{msgs['text.ajax.loading']}"                         
-                        emptyMessage="#{msgs['paper.text.noEntitiesFiltered']}"
-                        rowSelectListener="#{paperController.rowSelect}"
-                        >
+<p:growl id="msgOk" showDetail="false" />
 
-						<p:column headerText="#{msgs['paper.form.id']}">
-                            <h:outputText value="#{paper.id}" />
-                        </p:column>
-                        
-                        <p:column headerText="#{msgs['paper.form.title']}">
-                            <h:outputText value="#{paper.title}" />
-                        </p:column>
-                        
-                        <p:column headerText="#{msgs['paper.form.year']}">
-                            <h:outputText value="#{paper.year}" />
-                        </p:column>                                                
-                        
-                        <p:ajax event="rowSelect" listener="#{paperController.rowSelect}" render="@form :listingForm" update=":listingForm :buttonsForm" />
-                    </p:dataTable>
-                </h:panelGroup>
-            </h:form>
-            <br/>
-            <h:form id="buttonsForm">
-                <div class="crudButtons">
-                
-                <h:commandButton action="#{paperController.novo}" value="Novo" /> &nbsp;
-			    <h:commandButton action="#{paperController.editar}" value="Editar" disabled="#{paperController.selectedEntity == null}" />&nbsp;					
-                <h:commandButton action="#{paperController.deletar}" value="Deletar" disabled="#{paperController.selectedEntity == null}" /> &nbsp;
-                
-                </div>
-     </h:form>
-     
-     <hr />
-     <br />
+<p:dataGrid id="tabPapersList" style="border-style: none !important" value="#{paperControllerList.papers}" var="paper" columns="3">
+
+	<p:panel style="width:270px; height:390px">
+    	<h:panelGrid id="tabPaperList" columns="1" style="width:230px; height:390px; text-align:center;">
+    		
+			<h:commandLink id="linkArquivo"  action="#{paperControllerList.exibirArquivo(paper.arquivoPdf)}" target="_blank" ajax="false" >
+				<o:graphicImage value="#{paperControllerList.getImage(paper.arquivoPdf)}" dataURI="true" width="200" height="250" />
+			</h:commandLink>
+						
+	      	<h:panelGrid columns="1" >
+	      		<h:outputText value="#{paper.title}"/>
+	      	</h:panelGrid>	
+	      	
+	      	<h:panelGrid columns="3">
+	      		<h:commandLink id="linkArquivo2" action="#{paperControllerList.exibirArquivo(paper.arquivoPdf)}" target="_blank" ajax="false" >
+	      			<p:commandButton ajax="false" icon="ui-icon-document"/>
+	      		</h:commandLink>
+	      		<p:commandButton id="adicionarPaperToUsuario" action="#{paperControllerList.adicionarPaperToUsuario(paper.id)}" icon="ui-icon-plusthick" ajax="false" />
+	      		<p:commandButton action="#{recomendacaoController.novo(paper)}" icon="ui-icon-mail-closed" ajax="false" />
+	      	</h:panelGrid>
+	      	      
+	    </h:panelGrid>
+  	</p:panel> 
+           
+</p:dataGrid>
+</h:form>
+
+
 			
       </ui:define>
     

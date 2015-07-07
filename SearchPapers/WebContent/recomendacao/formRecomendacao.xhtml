@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      			xmlns:ui="http://java.sun.com/jsf/facelets"
+     			xmlns:f="http://java.sun.com/jsf/core"
+      			xmlns:h="http://java.sun.com/jsf/html"
+      			xmlns:p="http://primefaces.org/ui"
+      			xmlns:o="http://omnifaces.org/ui"
+      			template="/resource/template/decorator.xhtml">
+      
+      <ui:define name="titulo"><h:outputText value="#{msgs['title.recomendacao']}" /></ui:define>
+
+	<ui:define name="contents">
+
+
+		
+	<h:form id="frmRecomendacao">
+		<p:growl id="msgOk" showDetail="false" />
+		
+		<h1><h:outputText value="#{msgs['recomendacao.title.form']}" /></h1>
+		
+			<hr />
+			<br/>
+
+			<p>
+				<h:panelGrid id="pgRecomendacao" columns="3">
+			    	<h:outputLabel for="id">Id:</h:outputLabel>
+					<p:inputText id="id" value="#{recomendacaoController.recomendacao.id}" size="20" readonly="true" />
+					<p:message for="id" />
+					
+					<h:outputLabel for="artigo">Artigo:</h:outputLabel>								
+					<h:panelGrid id="pgPdf" columns="2">
+					<h:commandLink id="clPdf" action="#{paperControllerList.exibirArquivo(recomendacaoController.recomendacao.paper.arquivoPdf)}" target="_blank" ajax="false" immediate="true" >
+				  	<o:graphicImage id="giPdf" value="#{paperControllerList.getImage(recomendacaoController.recomendacao.paper.arquivoPdf)}" dataURI="true" width="150" height="200" />
+					</h:commandLink>
+					<h:outputText id="title" value="#{recomendacaoController.recomendacao.paper.title}"/>
+					</h:panelGrid>
+					<br/>
+					
+					<h:outputLabel for="remetente">Remetente:</h:outputLabel>
+					<p:inputText id="remetente" value="#{recomendacaoController.recomendacao.remetente.nome}" readonly="true" size="50" />								
+					<p:message for="remetente" />	
+					
+					<h:outputLabel for="destinatario">Destinatário:</h:outputLabel>
+					<h:panelGrid id="pgDest" columns="1" >
+					<p:selectOneMenu id="destinatario" value="#{recomendacaoController.recomendacao.destinatario}" converter="generic"  filter="true" filterMatchMode="startsWith" required="true" requiredMessage="Campo Destinatário é obrigatório">
+                          <f:selectItem itemLabel="Select" itemValue="" noSelectionOption="true"/>
+                          <f:selectItems id="destinatarioItems" value="#{usuarioController.usuarios}" var="usuario" itemLabel="#{usuario.nome}" itemValue="#{usuario}"/>
+                    </p:selectOneMenu>
+		   			</h:panelGrid>
+		   			<p:message for="destinatario" />
+  				
+					<h:outputLabel for="mensagem">Mensagem:</h:outputLabel>					
+					<p:inputTextarea id="mensagem" value="#{recomendacaoController.recomendacao.mensagem}" cols="100" rows="10" counter="display" maxlength="255" counterTemplate="{0} characters remaining." autoResize="false" required="false" label="mensagem"/>
+					<h:outputText id="display" />	
+					
+					<p:message for="mensagem" />
+					
+				</h:panelGrid>
+								
+			</p>
+			
+			<br/>
+			
+			 <!-- Buttons shown below the listing. -->           
+                <div class="crudButtons">
+			      <p:commandButton value="Salvar" icon="ui-icon-check" action="#{recomendacaoController.salvar()}" ajax="false"> </p:commandButton> &nbsp;&nbsp; 
+			      <p:commandButton value="Cancelar" icon="ui-icon-closethick" action="#{recomendacaoController.cancelar}" ajax="false" immediate="true"> </p:commandButton>       		    
+                </div>
+       
+			<br/>
+			<br/>
+			<br/>
+			
+			<hr />
+			<br/>		
+			
+			
+		</h:form>
+
+	</ui:define>
+  
+</ui:composition>

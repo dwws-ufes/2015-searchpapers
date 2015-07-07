@@ -1,0 +1,143 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                template="/resource/template/decoratorLogin.xhtml">
+
+      
+      
+    <ui:define name="titulo"><h:outputText value="#{msgs['title.usuario']}" /></ui:define>
+
+	<ui:define name="contents">
+	
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+	
+	<h1><h:outputText value="#{msgs['Usuario.title.form']}" /></h1>		
+	<hr />
+	<br/>
+				
+	<h:form id="frmUsuario">
+		<p:growl id="msgOk" showDetail="false" />
+		
+		
+
+		<p:fieldset id="tabPessoal"  legend="Dados Pessoais" toggleable="true" toggleSpeed="500">
+			<h:panelGrid columns="3">
+		    	<h:outputLabel for="name">Id:</h:outputLabel>
+				<p:inputText id="id" value="#{usuarioController.usuario.id}" size="30" readonly="true" />
+				<p:message for="id" />
+				
+				<h:outputLabel for="name">Nome:</h:outputLabel>
+				<p:inputText id="name" value="#{usuarioController.usuario.nome}" size="30"  required="true" label="name" requiredMessage="É necessário preencher o nome do usuário." >
+				 		 					 					
+				</p:inputText>								
+				<p:message for="name" />
+				
+				<h:outputLabel for="sobrenome">Sobrenome:</h:outputLabel>
+				<p:inputText id="sobrenome" value="#{usuarioController.usuario.sobrenome}" size="50"  required="true" label="sobrenome" requiredMessage="É necessário preencher o sobrenome do usuário." />								
+				<p:message for="sobrenome" />	
+				
+				<h:outputLabel for="dataNasc">Data de Nascimento:</h:outputLabel>													
+				<p:inputMask id="dataNasc" value="#{usuarioController.usuario.dataNascimento}" size="15" required="true" mask="#{msgs['format.date.primefaces']}">
+					<p:ajax event="blur" />
+					<f:convertDateTime type="date" pattern="#{msgs['format.date.java']}" />
+			    </p:inputMask>
+    			<p:message for="dataNasc" />
+    			
+    			<h:outputLabel for="email">Email:</h:outputLabel>
+				<p:inputText id="email" value="#{usuarioController.usuario.email}" size="30"  label="email" validatorMessage="Não é um endereço de email válido!" >
+				  <p:ajax event="blur" />
+				  <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+				</p:inputText> 
+				<p:message for="email" />
+     		</h:panelGrid>
+		</p:fieldset>
+		<br />
+		<p:fieldset id="tabSenha" legend="Senha" toggleable="true" toggleSpeed="500">
+			<h:panelGrid columns="3" id="matchGrid" >                   
+       			  <h:outputLabel for="pwd1" value="Senha: " />
+       			  <p:password id="pwd1" value="#{usuarioController.usuario.senha}" redisplay="true" match="pwd2" label="Senha 1" required="true" feedback="true" >
+       			  <p:ajax event="blur" />
+       			  </p:password>
+ 				  <p:message for="pwd1" />
+ 					
+      			  <h:outputLabel for="pwd2" value="Confirme a senha:   " />
+      			  <p:password id="pwd2" value="#{usuarioController.usuario.senha}" redisplay="true" label="Senha 2" required="true"  feedback="true">
+      			  <p:ajax event="blur" />
+      			  </p:password>
+      			  <p:message for="pwd2" />
+    		</h:panelGrid>
+    	</p:fieldset>
+		<br />
+		<p:fieldset id="tabEndereco" legend="Endereço" toggleable="true" toggleSpeed="500">
+			<h:panelGrid columns="3" >   				
+				<h:outputLabel for="endereco">Endereço:</h:outputLabel>
+				<p:inputText id="endereco" value="#{usuarioController.usuario.endereco}" size="70" required="true" label="endereco" requiredMessage="É necessário preencher o endereco do usuário." />								
+				<p:message for="endereco" />	
+				
+				<h:outputLabel for="estado">Estado:</h:outputLabel>
+				<h:panelGrid columns="2" >
+				<p:selectOneMenu id="estado" required="true" value="#{usuarioController.usuario.estado}" converter="generic"  filter="true" filterMatchMode="startsWith">
+                         <f:selectItem itemLabel="Select" itemValue="" noSelectionOption="true"/>
+                         <f:selectItems value="#{estadoController.estados}" var="estado" itemLabel="#{estado.sigla}" itemValue="#{estado}"/>
+                        <p:ajax  listener="#{usuarioController.refreshEstado}" event="change"  update="cidade" process="estado" />
+                   </p:selectOneMenu>
+	   			</h:panelGrid>
+	   			<p:message for="estado" />
+  					
+ 				<h:outputLabel value="Cidade"/> 
+ 				<h:panelGrid columns="2" >					 
+				<p:selectOneMenu id="cidade" value="#{usuarioController.usuario.cidade}"  
+				                 converter="generic"  
+				                 required="true"  
+				                 requiredMessage="Campo [Cidade] obrigatório"> 
+				    <f:selectItem itemLabel="Select" itemValue="" noSelectionOption="true"/> 
+				    <f:selectItems value="#{usuarioController.cidades}"  
+				                   var="cidade"  
+				                   itemLabel="#{cidade.nome}"  
+				                   itemValue="#{cidade}" />  
+    			    <p:ajax listener="#{usuarioController.carregaMapa}" update="mapa comment" />
+
+				</p:selectOneMenu>
+				</h:panelGrid>
+				<p:message for="cidade" />
+															
+				<h:outputLabel for="cep">CEP:</h:outputLabel>
+				<p:inputMask  value="#{usuarioController.usuario.cep}" id="cep" mask="99.999-999" required="true" requiredMessage="É necessário preencher o CEP do usuário."  />
+				<p:message for="cep" />	
+			
+				<br />						
+				<h:panelGrid columns="1" >  
+	    			<p:gmap id="mapa" center="#{usuarioController.usuario.latLong}" zoom="10" type="HYBRID" style="width:100%;height:250px" />
+				    <br/>			    
+				    <p:inputTextarea id="comment" value="#{usuarioController.usuario.comentario}" cols="80" rows="5" counter="display" maxlength="255" counterTemplate="{0} characters remaining." autoResize="false" required="false" label="comment"/>
+		    		<h:outputText id="display" />	
+				</h:panelGrid>			 
+				<br />		
+   	</h:panelGrid>
+   </p:fieldset>
+   			<br/>
+   			
+<!-- Buttons shown below the listing. -->
+  
+    	<div class="crudButtons">
+   	 		<p:commandButton value="Salvar" icon="ui-icon-star" action="#{usuarioController.salvar}" ajax="false"> </p:commandButton>  &nbsp;&nbsp;
+    		<p:commandButton value="Cancelar" icon="ui-icon-star" action="#{usuarioController.cancelar}" ajax="false" immediate="true"> </p:commandButton>		    
+        </div>
+
+			<br/>
+			<br/>
+			<br/>
+			
+
+		</h:form>
+		
+		
+
+ 
+    
+	</ui:define>
+  
+</ui:composition>

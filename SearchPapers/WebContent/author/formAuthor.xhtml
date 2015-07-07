@@ -11,28 +11,33 @@
 	<ui:define name="contents">
 		<h1><h:outputText value="#{msgs['Author.title.list']}" /></h1>
 		
+	  
 <hr />
 <br/>
 		
-	<h:form id="formAuthor">
+	<h:form id="frmAuthor">
 		<p:growl id="msgOk" showDetail="false" />
 
 			
 
 			<p>
 				<h:panelGrid id="fields" columns="3">
+				    <br/>
+                    <p:graphicImage value="#{authorController.author.urlFoto}" url="#{authorController.author.urlFoto}" cache="disable" width="150" height="200" id="foto"/>    
+				    <br/>
+				    
 			    	<h:outputLabel for="name">Id:</h:outputLabel>
 					<h:inputText id="id" value="#{authorController.author.id}" label="id" size="30" readonly="true" />
 					<p:message for="id" />
 					
 					<h:outputLabel for="name">Name:</h:outputLabel>
-					<h:inputText id="name" value="#{authorController.author.name}" size="30" readonly="#{authorController.readOnly}" required="true" label="name" requiredMessage="É necessário preencher o nome.">
-				    	
+					<h:inputText id="name" value="#{authorController.author.name}" size="30" readonly="false" required="true" label="name" requiredMessage="É necessário preencher o nome.">
+				    	<f:ajax event="blur" listener="#{authorController.carregaInformacaoWeb}" execute="@this" render="foto institute tabArtigos"  />
 					</h:inputText>					
 			    	 <p:message for="name" />
 				 
 					<h:outputLabel for="email">Email:</h:outputLabel>
-					<h:inputText id="email" value="#{authorController.author.email}" size="30" readonly="#{authorController.readOnly}" label="email" validatorMessage="Não é um endereço de email válido!">
+					<h:inputText id="email" value="#{authorController.author.email}" size="30" readonly="false" label="email" validatorMessage="Não é um endereço de email válido!">
 					 
 					  <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
  
@@ -40,24 +45,41 @@
 					<p:message for="email" />
 					<h:outputLabel for="institute">Institute:</h:outputLabel>
 					<p:selectOneMenu id="institute" required="false" value="#{authorController.author.institute}"  converter="generic" >
-                          <f:selectItems value="#{instituteController.institutes}" var="institute" itemLabel="#{institute.name}" itemValue="#{institute}"/>
+                          <f:selectItems id="instituteItems" value="#{authorController.institutes}" var="institute" itemLabel="#{institute.name}" itemValue="#{institute}"/>
                          
-                    </p:selectOneMenu>					
+                    </p:selectOneMenu>		
+                    <br/>                   
+				
 				</h:panelGrid>
+				
+				
 			</p>
 			
 			<br/>
-			
-			 <!-- Buttons shown below the listing. -->
-            <h:form id="buttonsForm">
-                <div class="crudButtons">
-			      <h:commandButton  value="Salvar" action="#{authorController.salvar(authorController.author)}" /> &nbsp;&nbsp;
-			      <h:commandButton  value="Listar" action="#{authorController.listar}" immediate="true"/><p></p>			    
-                </div>
-            </h:form>
-
-			
 			<br/>
+			
+		              
+
+                <!-- The list of entities. -->
+                 <p:dataTable id="tabArtigos" var="paper" value="#{authorController.papers}">
+		            <p:column style="width:20px">
+		                <h:outputText id="dragIcon" styleClass="ui-icon ui-icon-arrow-4" />
+		                <p:draggable for="dragIcon" revert="true" helper="clone"/>
+		            </p:column>
+		 
+		            <p:column headerText="Título">
+		            	<h:outputLink id="linkPaper" value="#{paper.urlPaper}" target="_blank">
+		                	<h:outputText value="#{paper.title}" />
+		                </h:outputLink>
+		            </p:column> 		            
+                 </p:dataTable>
+           
+         
+			<br/>
+			 <div class="crudButtons">
+			      <h:commandButton id="cbSalvar" value="Salvar" action="#{authorController.salvar(authorController.author)}" /> &nbsp;&nbsp;
+			      <h:commandButton id="cbListar" value="Voltar" action="#{authorController.listar}" immediate="true"/><p></p>			    
+             </div>
 			<hr />
 			
 			

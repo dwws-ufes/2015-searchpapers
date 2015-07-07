@@ -4,8 +4,8 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd"
     version="2.2">
-
-	<application>
+    
+<application>
 	    <!-- Defines the resource bundle that contains the standard JSF messages (overriding the ones provided). -->
 	    <message-bundle>searchpapers.message.faces</message-bundle>
 	
@@ -21,4 +21,3 @@
 	    </locale-config>
 	</application>
 </faces-config>
-

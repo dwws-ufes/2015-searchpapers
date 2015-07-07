@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>br.ufes.inf.nemo</groupId>
-  <artifactId>searchpapers</artifactId>
+  <groupId>SearchPapers</groupId>
+  <artifactId>SearchPapers</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
   
@@ -17,6 +17,14 @@
         <url>http://dev.nemo.inf.ufes.br/maven2/</url>
         <layout>default</layout>
     </repository>
+	<repository>
+		<!-- biblioteca para pdf -->
+	    <id>snowtide-releases</id>
+	    <url>http://maven.snowtide.com/releases</url>
+	    <releases>
+	        <enabled>true</enabled>
+	    </releases>
+	</repository>
   </repositories>
   
   <build>
@@ -34,8 +42,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.1</version>
         <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
+          <source>1.7</source>
+          <target>1.7</target>
         </configuration>
       </plugin>
       <plugin>
@@ -48,11 +56,43 @@
       </plugin>
     </plugins>
   </build>
+  
   <dependencies>
   	<dependency>
   		<groupId>br.ufes.inf.nemo</groupId>
   		<artifactId>nemo-utils-jee-wp</artifactId>
   		<version>1.1</version>
   	</dependency>
-  </dependencies>
+  	<dependency>
+  		<!-- biblioteca para PDF -->
+	    <groupId>com.snowtide</groupId>
+	    <artifactId>pdfxstream</artifactId>
+	    <version>3.1.2</version>
+	</dependency>
+	<dependency>
+		<!-- biblioteca para PDF -->
+		<groupId>com.itextpdf</groupId>
+		<artifactId>itextpdf</artifactId>
+		<version>5.0.6</version>
+	</dependency>
+	<dependency>
+		<groupId>com.kenai.nbpwr</groupId>
+		<artifactId>com-sun-pdfview</artifactId>
+		<version>1.0.5-201003191900</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.omnifaces</groupId>
+	    <artifactId>omnifaces</artifactId>
+	    <version>2.0</version>
+	</dependency>
+	
+	<dependency>
+	<!-- biblioteca para SPARQL -->
+		 <groupId>org.apache.jena</groupId>
+		 <artifactId>apache-jena-libs</artifactId>
+		 <type>pom</type>
+		 <version>2.13.0</version>
+	</dependency>
+
+	</dependencies>
 </project>

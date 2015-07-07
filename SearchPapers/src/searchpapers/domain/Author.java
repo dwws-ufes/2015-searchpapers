@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
 import searchpapers.controller.SampleEntity;
@@ -23,8 +24,15 @@ public class Author implements Serializable, SampleEntity{
 	
 	private String email;
 	
+	@Lob
+	private byte[] arquivoFoto;
+	
+	private String urlFoto;
+	
 	@ManyToOne
 	private Institute institute;
+	
+	
 
 	public Long getId() {
 		return id;
@@ -64,4 +72,22 @@ public class Author implements Serializable, SampleEntity{
 	public String toString(){
 		return "";
 	}
+
+	public String getUrlFoto() {
+		return urlFoto;
+	}
+
+	public void setUrlFoto(String urlFoto) {
+		this.urlFoto = urlFoto;
+	}
+
+	public byte[] getArquivoFoto() {
+		return arquivoFoto;
+	}
+
+	public void setArquivoFoto(byte[] arquivoFoto) {
+		this.arquivoFoto = arquivoFoto;
+	}
+	
+	
 }

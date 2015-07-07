@@ -17,7 +17,7 @@ import searchpapers.domain.Paper_;
 public class PaperJPADAO implements PaperDAO {
 	@PersistenceContext
 	private EntityManager entityManager;
-
+	
 	
 	public Paper salvar(Paper objeto){
 		if (objeto.isPersistent()) {
@@ -40,8 +40,8 @@ public class PaperJPADAO implements PaperDAO {
 		CriteriaQuery<Paper> cq = cb.createQuery(Paper.class);
 		cq.from(Paper.class);
 	
-		 List<Paper> result = entityManager.createQuery(cq).getResultList();
-		
+		List<Paper> result = entityManager.createQuery(cq).getResultList();
+		 
 		 return result;
 	}
 	
@@ -84,5 +84,7 @@ public class PaperJPADAO implements PaperDAO {
 	    
 		return query.getResultList();		
 	}
+	
+	
 	
 }

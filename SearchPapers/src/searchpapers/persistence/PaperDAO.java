@@ -11,6 +11,7 @@ import searchpapers.domain.Paper;
 public interface PaperDAO {
 	Paper salvar(Paper objeto);
 	void deletar(Paper objeto);
+	
 	List<Paper> getPapers();
 	Paper getById(Long id);	
 	List<Paper> getByName(String title);

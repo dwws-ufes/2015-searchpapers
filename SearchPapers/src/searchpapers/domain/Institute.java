@@ -22,6 +22,8 @@ public class Institute implements Serializable, SampleEntity{
 	@OneToMany(mappedBy = "institute")
 	private List<Author> authors;
 
+	private String webAdress;
+	
 	public Long getId() {
 		return id;
 	}
@@ -46,7 +48,29 @@ public class Institute implements Serializable, SampleEntity{
 		this.authors = authors;
 	}
 	
+	
+	
+	public String getWebAdress() {
+		return webAdress;
+	}
+
+	public void setWebAdress(String webAdress) {
+		this.webAdress = webAdress;
+	}
+
 	public boolean isPersistent(){
 		return (id != null);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if( obj != null){
+	      if(this.id == ((Institute) obj).id) {
+	        return true;
+	      }else {
+	        return false;
+	      }
+		}
+		return false;
 	}
 }

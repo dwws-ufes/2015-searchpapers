@@ -1,0 +1,245 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY spaper "http://localhost:8080/SearchPapers/spaper#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+]>
+
+
+<rdf:RDF xmlns="http://localhost:8080/SearchPapers/spaper#"
+     xml:base="http://localhost:8080/SearchPapers/spaper"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:spaper="http://localhost:8080/SearchPapers/spaper#">
+    <owl:Ontology rdf:about="http://localhost:8080/SearchPapers/spaper">
+        <owl:imports rdf:resource="http://xmlns.com/foaf/0.1/"/>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://localhost:8080/SearchPapers/spaper#has_author -->
+
+    <owl:ObjectProperty rdf:about="&spaper;has_author">
+        <rdfs:domain rdf:resource="&spaper;Paper"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://localhost:8080/SearchPapers/spaper#has_journal -->
+
+    <owl:ObjectProperty rdf:about="&spaper;has_journal">
+        <rdfs:domain rdf:resource="&spaper;Paper"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://localhost:8080/SearchPapers/spaper#has_keyword -->
+
+    <owl:ObjectProperty rdf:about="&spaper;has_keyword">
+        <rdfs:domain rdf:resource="&spaper;Paper"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://localhost:8080/SearchPapers/spaper#works_for -->
+
+    <owl:ObjectProperty rdf:about="&spaper;works_for">
+        <rdfs:domain rdf:resource="&spaper;Author"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://localhost:8080/SearchPapers/spaper#email -->
+
+    <owl:DatatypeProperty rdf:about="&spaper;email">
+        <rdfs:domain rdf:resource="&spaper;Author"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://localhost:8080/SearchPapers/spaper#summary -->
+
+    <owl:DatatypeProperty rdf:about="&spaper;summary">
+        <rdfs:domain rdf:resource="&spaper;Paper"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://localhost:8080/SearchPapers/spaper#webAddress -->
+
+    <owl:DatatypeProperty rdf:about="&spaper;webAddress">
+        <rdfs:domain rdf:resource="&spaper;Institute"/>
+        <rdfs:domain rdf:resource="&spaper;Paper"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://localhost:8080/SearchPapers/spaper#word -->
+
+    <owl:DatatypeProperty rdf:about="&spaper;word">
+        <rdfs:domain rdf:resource="&spaper;Keyword"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://localhost:8080/SearchPapers/spaper#year -->
+
+    <owl:DatatypeProperty rdf:about="&spaper;year">
+        <rdfs:domain rdf:resource="&spaper;Paper"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://xmlns.com/foaf/0.1/name -->
+
+    <rdf:Description rdf:about="http://xmlns.com/foaf/0.1/name">
+        <rdfs:domain rdf:resource="&spaper;Author"/>
+        <rdfs:domain rdf:resource="&spaper;Institute"/>
+        <rdfs:domain rdf:resource="&spaper;Journal"/>
+    </rdf:Description>
+    
+
+
+    <!-- http://xmlns.com/foaf/0.1/title -->
+
+    <rdf:Description rdf:about="http://xmlns.com/foaf/0.1/title">
+        <rdfs:domain rdf:resource="&spaper;Paper"/>
+    </rdf:Description>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://localhost:8080/SearchPapers/spaper#Author -->
+
+    <owl:Class rdf:about="&spaper;Author">
+        <rdfs:subClassOf rdf:resource="http://schema.org/Person"/>
+    </owl:Class>
+    
+
+
+    <!-- http://localhost:8080/SearchPapers/spaper#Institute -->
+
+    <owl:Class rdf:about="&spaper;Institute">
+        <rdfs:subClassOf rdf:resource="http://xmlns.com/foaf/0.1/Organization"/>
+    </owl:Class>
+    
+
+
+    <!-- http://localhost:8080/SearchPapers/spaper#Journal -->
+
+    <owl:Class rdf:about="&spaper;Journal">
+        <rdfs:subClassOf rdf:resource="http://xmlns.com/foaf/0.1/Organization"/>
+    </owl:Class>
+    
+
+
+    <!-- http://localhost:8080/SearchPapers/spaper#Keyword -->
+
+    <owl:Class rdf:about="&spaper;Keyword"/>
+    
+
+
+    <!-- http://localhost:8080/SearchPapers/spaper#Paper -->
+
+    <owl:Class rdf:about="&spaper;Paper">
+        <rdfs:subClassOf rdf:resource="http://xmlns.com/foaf/0.1/Document"/>
+    </owl:Class>
+    
+
+
+    <!-- http://schema.org/Person -->
+
+    <owl:Class rdf:about="http://schema.org/Person"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://localhost:8080/SearchPapers/spaper#author -->
+
+    <owl:NamedIndividual rdf:about="&spaper;author">
+        <rdf:type rdf:resource="http://schema.org/CreativeWork"/>
+        <has_author rdf:resource="&spaper;author"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://localhost:8080/SearchPapers/spaper#institute -->
+
+    <owl:NamedIndividual rdf:about="&spaper;institute">
+        <rdf:type rdf:resource="&spaper;Institute"/>
+        <works_for rdf:resource="&spaper;institute"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://localhost:8080/SearchPapers/spaper#journal -->
+
+    <owl:NamedIndividual rdf:about="&spaper;journal">
+        <rdf:type rdf:resource="&spaper;Journal"/>
+        <rdf:type rdf:resource="http://schema.org/CreativeWork"/>
+        <has_journal rdf:resource="&spaper;journal"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://localhost:8080/SearchPapers/spaper#keyword -->
+
+    <owl:NamedIndividual rdf:about="&spaper;keyword">
+        <rdf:type rdf:resource="&spaper;Keyword"/>
+        <rdf:type rdf:resource="http://schema.org/CreativeWork"/>
+        <has_keyword rdf:resource="&spaper;keyword"/>
+    </owl:NamedIndividual>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 3.4.2) http://owlapi.sourceforge.net -->
+

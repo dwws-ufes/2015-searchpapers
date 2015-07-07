@@ -1,33 +1,51 @@
 package searchpapers.controller;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.Serializable;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.Part;
 
-import searchpapers.application.AuthorService;
-import searchpapers.application.InstituteService;
-import searchpapers.application.KeywordService;
+import org.primefaces.context.RequestContext;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+
+import searchpapers.application.JournalService;
 import searchpapers.application.PaperService;
 import searchpapers.domain.Author;
-import searchpapers.domain.Institute;
+import searchpapers.domain.Journal;
 import searchpapers.domain.Keyword;
 import searchpapers.domain.Paper;
+import searchpapers.domain.Usuario;
+import searchpapers.file.FileImage;
+import searchpapers.file.FilePDF;
 import searchpapers.message.MessageController;
+
+
 
 
 @Named
 @SessionScoped
 public class PaperController extends MessageController implements Serializable {	
 
-	@EJB
-	private PaperService paperService;
+	@EJB private PaperService paperService;
+	@EJB private JournalService journalService;
+	
+	@Inject UsuarioController usuarioController;
+	@Inject PaperControllerList paperControllerList;
+	@Inject PaperControllerKeyword paperControllerKeyword;
+	@Inject PaperControllerAuthor paperControllerAuthor;
+	
+	@Inject FileImage fileImage;
+	@Inject FilePDF filePDF;
 	
 	//-- paper
 	private Paper paper = new Paper();
@@ -37,209 +55,163 @@ public class PaperController extends MessageController implements Serializable {
 	public void setPaper(Paper paper) {
 		this.paper = paper;
 	}
-	//-- paper
-	
-	
-	private List<Paper> papers;
-	public List<Paper> getPapers(){
-		return papers;
+		
+	//--journal		
+	private Journal journal = new Journal();
+	public Journal getJournal(){
+		return journal;
 	}
-	
-	@Inject
-	void listar(){
-		papers = paperService.getPapers();
-		listarArray();
+	public void setJournal(Journal journal) {
+		this.journal = journal;
 	}
-	
 	
 
-	
-	//-------------------------------
-	private Map<Long, Paper> arrayPapers = new TreeMap<Long, Paper>();
-	
-	public List<Paper> getArrayPapers() {
-		return new ArrayList<Paper>(arrayPapers.values());
-	}	
-	public void addArray(Paper k) {
-		arrayPapers.put(k.getId(), k);
-	}	
-	public void deletarArray(Paper k) {
-		arrayPapers.remove(k.getId());
-	}	
-	public void limparArray() {
-		arrayPapers.clear();
-	}	
-	public void listarArray(){
-		for (int i = 0; i < papers.size(); i++) {
-			arrayPapers.put(papers.get(i).getId(), papers.get(i));
-		}
-	}
-	///----------------------------
-	
-
-	//-------filtro
-	
-	private String  filter;
-	public String getFilter(){
-		return filter;
-	}	
-	public void setFilter(String filter){
-		this.filter =  filter;
-	}
-	
-	private String valorFiltro;
-	public String getValorFiltro(){
-		return valorFiltro;
-	}	
-	public void setValorFiltro(String filter){
-		this.valorFiltro =  filter;
-	}
-	
-	private boolean filtering;
-	public boolean getFiltering(){
-		return filtering;
-	}
-		
-	public void cancelFilter(){
-		filtering = false;
-		this.paper = new Paper();
-		setValorFiltro("");
-	
-	}
-	public String cancelarFiltro(){
-		cancelFilter();
-		limparArray();
-		listar();
-	    return "";
-	}
-	
-	public void filtrar(){
-		try{
-			if ((this.filter != null)&&(this.filter != "")&&(!this.filter.equals(""))){
-				if ((this.filter == "title") ||  (this.filter.equals("title"))) {					
-					papers = paperService.getByLikeName(valorFiltro);
-					limparArray();
-					listarArray();
-					
-				}else
-			    if ((this.filter == "id")||  (this.filter.equals("id"))){			         
-			    	paper = paperService.getById(Long.parseLong(valorFiltro));
-			    	papers = new ArrayList<Paper>();
-			    	papers.add(paper);
-					limparArray();
-					listarArray();
-			    }
-				setMessageKey("OK", "pesq.sucesso");		
-				this.filter = "";
-				this.valorFiltro = "";
-			}
-			else{
-				setMessageKey("OK", "filtro.nao.preenchido");	
-				limparArray();
-				listar();				
-			}
-		}
-		catch(Exception e){
-			setMessageChar("OK", "errooooo");
-			setMessageChar("ERRO", e.getMessage());  
-		}
-		
-	}	
-		
-	//-------filtro
-	
-	//--- Lista 
-	protected boolean readOnly = false;		
+	//--- imagem readOnly
+	protected boolean readOnly = true;		
 	public boolean isReadOnly() {
 		return readOnly;
 	}
-	
-	public Paper getSelectedEntity(){
-		return paper;
-	}
-	
-	public String rowSelect(){
-		setMessageChar("OK", "teste");
-		return "";
-	}
-	//--- Lista
+
 	
 	
 	//----- CRUD
-	
-	
-	public String novo(){	
-		readOnly = false;
+	private void limparDados(){
 		this.paper = new Paper();
-		limparArrayKeyword();
-		limparArrayAuthor();
-		return "/paper/formPaper.xhtml";
+		paperControllerKeyword.setKeyword(new Keyword());
+		paperControllerAuthor.setAuthor(new Author());
+		this.journal = new Journal();
+		this.imagemByte = null;
+		this.arquivoByte = null;
+		setBufferImg(null);
+		setPreviewPdf(null);		
+		paperControllerKeyword.limparArrayKeyword();
+		paperControllerAuthor.limparArrayAuthor();
 	}
 	
-	public String editar(){	
-		if (paper.getId()== null){
+	public String novo(){	
+		readOnly = true;
+		limparDados();
+		return "/paper/formPaper.xhtml?faces-redirect=true";
+	}
+	
+	public String cancelar(){	
+		return "/paper/listPaper.xhtml?faces-redirect=true";
+	}
+	
+	public String editar(Long id){	
+		limparDados();
+		
+		Paper p = paperService.getById(id);		
+		if (p.getId()== null){
 			setMessageKey("ERRO", "obj.nao_localizado");	
 			return "";
 		  }
 		else{
+			paper = p;
 			readOnly = false;
-			listarArrayKeyword();
-			listarArrayAuthor();
-			return "/paper/formPaper.xhtml";
+			journal = paper.getJournal();
+			paperControllerKeyword.listarArrayKeyword(paper);
+			paperControllerAuthor.listarArrayAuthor(paper);
+			return "/paper/formPaper.xhtml?faces-redirect=true";
 		}
 	}
 	
 	
-	public String cadastrarPaper(){
-		try{
+	public String salvar() throws IOException{
+		try{					 
 			
 		  if (paper.getId()== null){
-			  
-			  	List<Paper> list = paperService.getByName(paper.getTitle());
+
+			  	List<Paper> listPaper = paperService.getByName(paper.getTitle());
 				
-				if ( list.isEmpty()){	
-					List<Keyword> keywords = new ArrayList<Keyword>(arrayKeywords.values());
+			  	if ( listPaper.isEmpty()){	
+			  		//se não existir esse paper da base - cadastra novo
+			  		
+					List<Keyword> keywords = new ArrayList<Keyword>(paperControllerKeyword.getArrayKeywords());
 					if ( keywords.isEmpty() ){
 						setMessageKey("ERRO", "paper.vazio_keyword");
 					}
+					else {
+						paper.setKeywords(keywords);
+					}
+	
+					List<Author> authors = new ArrayList<Author>(paperControllerAuthor.getArrayAuthors());
+					if ( authors.isEmpty() ){
+						setMessageKey("ERRO", "paper.vazio_Author");
+					}
+					else {
+						paper.setAuthors(authors);
+					}		
+					
+					List<Journal> listJournal = journalService.getByName(journal.getName());
+					Journal tempJournal;
+					if ( listJournal.isEmpty()){
+						tempJournal = journalService.salvar(journal);
+					}
 					else
 					{
-						paper.setKeywords(keywords);
-						
-						List<Author> authors = new ArrayList<Author>(arrayAuthors.values());
-						if ( authors.isEmpty() ){
-							setMessageKey("ERRO", "paper.vazio_Author");
-						}
-						else{
-							paper.setAuthors(authors);	
-							
-							paperService.salvar(paper); 
-							listar();
-							setMessageKey("OK", "cad.sucesso");														
-						}
+						tempJournal = listJournal.get(0);
+					}					
+					paper.setJournal(tempJournal);	
+					
+					if (arquivoByte == null){
+						setMessageKey("OK", "paper.arquivo.erro");									
+						return "";	
 					}
-				}
-				else{
-					setMessageKey("ERRO", "obj.ja_cadastrado");	
-				}
+					else{
+						paper.setArquivoPdf(arquivoByte);
+						System.out.println("Tamanho do arquivo = "+arquivoByte.length);
+					
+					
+						Usuario usuario = usuarioController.getUsuarioLogado();
+						List<Usuario> usuarios = new ArrayList<Usuario>();
+						usuarios.add(usuario);
+						paper.setUsuarios(usuarios);
+						
+						paperService.salvar(paper); 
+						paperControllerList.sugerirArtigos(paper.getAuthors());
+						
+						setMessageKey("OK", "paper.cad.sucesso");									
+						return "/paper/listPaperUsuario.xhtml?faces-redirect=true";
+					}
+			  	}	
+				else {
+					//ja existe cadastrado na base - só add ao usuario				
+					paperControllerList.adicionarPaperToUsuario(listPaper.get(0).getId());
+					paperControllerList.sugerirArtigos(listPaper.get(0).getAuthors());
+					setMessageKey("OK", "paper.add.sucesso");
+					return "/paper/listPaperUsuario.xhtml?faces-redirect=true";
+				}										
 		  }
 		  else{
-			  List<Keyword> keywords = new ArrayList<Keyword>(arrayKeywords.values());	
+			  List<Keyword> keywords = new ArrayList<Keyword>(paperControllerKeyword.getArrayKeywords());
 			  paper.setKeywords(keywords);	
 			  
-			  List<Author> authors = new ArrayList<Author>(arrayAuthors.values());	
+			  List<Author> authors = new ArrayList<Author>(paperControllerAuthor.getArrayAuthors());	
 			  paper.setAuthors(authors);	
 			  
+			  List<Journal> listJournal = journalService.getByName(journal.getName());
+			  Journal tempJournal = new Journal();
+			  if ( listJournal.isEmpty()){
+				tempJournal.setName(journal.getName());  
+			  	tempJournal = journalService.salvar(tempJournal);
+			  }
+			  else
+			  {
+				tempJournal = listJournal.get(0);
+			  }					
+			  paper.setJournal(tempJournal);	
+			  
 			  paperService.atualizar(paper); 			  
-			  setMessageKey("OK", "atu.sucesso");
-		  }	
-
-		  return "/paper/listPaper.xhtml";
-		  
+			  paperControllerList.sugerirArtigos(paper.getAuthors());
+			  
+			  setMessageKey("OK", "paper.atu.sucesso");
+			  return "/paper/listPaperUsuario.xhtml?faces-redirect=true";
+		  }				 
 		}
 		catch(Exception e){
 			setMessageChar("ERRO", e.getMessage()); 
-			return"";
+			return "";
 		}
 	}
 	
@@ -250,8 +222,7 @@ public class PaperController extends MessageController implements Serializable {
 			  setMessageKey("ERRO", "obj.nao_localizado");			   
 		  }
 		  else{
-			  paperService.deletar(paper); 
-			  deletarArray(paper);			  
+			  paperService.deletar(paper); 		  
 			  setMessageKey("OK", "del.sucesso");
 		  }
 		}
@@ -259,169 +230,112 @@ public class PaperController extends MessageController implements Serializable {
 			setMessageChar("ERRO", e.getMessage());  
 		}
 	}
+	
 	//----- CRUD
 	
 	
-	//-------------------- keywords
-	@EJB
-	private KeywordService keywordService;
-	
-	private Keyword keyword = new Keyword();
-	public Keyword getKeyword(){
-		return keyword;
-	}
-	public void setKeyword(Keyword keyword) {
-		this.keyword = keyword;
-	}
-	
-	//--- Array keyword
-	private Map<Long, Keyword> arrayKeywords = new TreeMap<Long, Keyword>();
-	
-	public List<Keyword> getArrayKeywords() {			
-		return new ArrayList<Keyword>(arrayKeywords.values());
-	}	
-	private void addArrayKeyword(Keyword k) {
-		arrayKeywords.put(k.getId(), k);
-	}		
-	private void delArrayKeyword(Keyword k) {		
-		arrayKeywords.remove(k.getId());
-	}	
-	private void limparArrayKeyword(){
-		arrayKeywords.clear();
-	}
-	public void listarArrayKeyword(){	
-		limparArrayKeyword();
-		for (int i = 0; i < paper.getKeywords().size(); i++) {			
-			arrayKeywords.put(paper.getKeywords().get(i).getId(), paper.getKeywords().get(i));
-		}
-	}
-	//--- Array keyword
-	
-	public void cadastrarKeyword(){	
-		try{
-			
-			Keyword temp = keyword;
-			List<Keyword> list = keywordService.getByName(temp.getWord());
-				
-			if ( list.isEmpty()){					
-				keywordService.salvar(temp); 
-				addArrayKeyword(temp);	
-				setMessageKey("OK", "cad.sucesso");
-			}
-			else{
-				setKeyword(list.get(0));
-				addArrayKeyword(list.get(0));	
-				setMessageKey("OK", "add.sucesso");
-			}
-		}
-		catch(Exception e){
-			setMessageKey("ERRO", e.getMessage());  
-		}			
-		setKeyword(new Keyword());						
-	}
-	
-	public void deletarKeyword(Keyword k){	
-		delArrayKeyword(k);
-		setMessageKey("OK", "del.sucesso");
-	}		
-	//--- Cadastro keyword	
-	
-	
-	//-------------------- Institute
-	@EJB
-	private InstituteService instituteService;
-	
-	private Institute institute = new Institute();
-	public Institute getInstitute(){
-		return institute;
-	}
-	public void setInstitute(Institute institute) {
-		this.institute = institute;
-	}	
-	//-------------------- Institute
-	
-	
-	//-------------------- Autor
-	@EJB
-	private AuthorService authorService;
-	
-	private Author author = new Author();
-	public Author getAuthor(){
-		return author;
-	}
-	public void setAuthor(Author author) {
-		this.author = author;
-	}
-	
-	//--- Array Author
-	private Map<Long, Author> arrayAuthors = new TreeMap<Long, Author>();
-	
-	public List<Author> getArrayAuthors() {		
-		return new ArrayList<Author>(arrayAuthors.values());
-	}	
-	private void addArrayAuthor(Author a) {
-		arrayAuthors.put(a.getId(), a);
-	}		
-	private void delArrayAuthor(Author a) {		
-		arrayAuthors.remove(a.getId());
-	}
-	private void limparArrayAuthor(){
-		arrayAuthors.clear();
-	}
-	public void listarArrayAuthor(){	
-		limparArrayAuthor();
-		for (int i = 0; i < paper.getAuthors().size(); i++) {			
-			arrayAuthors.put(paper.getAuthors().get(i).getId(), paper.getAuthors().get(i));
-		}
-	}
-	//--- Array Author
 
-	//--- Cadastro Author
-	public void cadastrarAuthor(){	
-		try{
-			List<Author> listAuthor = authorService.getByName(author.getName());
-			Author tempAuthor = new Author();
-			
-			if ( listAuthor.isEmpty()){	
-
-				tempAuthor = author;
-				
-				List<Institute> listInstitute = instituteService.getByName(institute.getName());
-				Institute tempInstitute;
-				if ( listInstitute.isEmpty()){
-					instituteService.salvar(institute);
-					tempInstitute = institute;
-				}
-				else
-				{
-					tempInstitute = listInstitute.get(0);
-				}
-				
-				tempAuthor.setInstitute(tempInstitute);				
-				authorService.salvar(tempAuthor); 
-				addArrayAuthor(tempAuthor);	
-				setMessageKey("OK", "cad.sucesso");
-			}
-			else
-			{
-				tempAuthor = listAuthor.get(0);
-				addArrayAuthor(tempAuthor);	
-				setMessageKey("OK", "add.sucesso");
-			}	
-		}
-		catch(Exception e){
-			setMessageKey("ERRO", e.getMessage());  
-		}			
-		setInstitute(new Institute());
-		setAuthor(new Author());						
+	private Part arquivoForm;
+	public Part getArquivoForm() {
+		return arquivoForm;
+	}
+	public void setArquivoForm(Part arquivoForm) {
+		this.arquivoForm = arquivoForm;
 	}
 	
-	public void deletarAuthor(Author a){	
-		delArrayAuthor(a);
-		setMessageKey("OK", "del.sucesso");
-	}		
-	//--- Cadastro Autor	
-	//-------------------- Autor
+	
+	private BufferedImage bufferImg;
+	public BufferedImage getBufferImg() {
+		return bufferImg;
+	}
+	public void setBufferImg(BufferedImage bufferImg) {
+		this.bufferImg = bufferImg;
+	}
+
+	private byte[] imagemByte;
+	private StreamedContent previewPdf;
+	public StreamedContent getPreviewPdf() {
+		DefaultStreamedContent content=null;
+	    try{	    		    	
+	    	BufferedImage bImg = getBufferImg();	
+	    	imagemByte = fileImage.BufferedImageToByte(bImg);	    	
+	        content=new DefaultStreamedContent(new ByteArrayInputStream(imagemByte),"image/jpeg");
+	        
+	    }catch(Exception e){
+	    	e.printStackTrace();
+	    }
+	    return content;
+	}
+	public void setPreviewPdf(StreamedContent previewPdf) {
+		this.previewPdf = previewPdf;
+	}
+	
+		
+	private  byte[] arquivoByte;
+	public void importarArquivo() throws Exception{
+	  try{
+		  RequestContext.getCurrentInstance().execute("PF('dialogCarregaPaper').show();");
+		  
+		  arquivoByte = fileImage.fileToByte(arquivoForm.getInputStream());
+		  
+		  ByteBuffer arquivoBuffer = null;
+		  arquivoBuffer = ByteBuffer.wrap(arquivoByte);   
+	
+		  setBufferImg(filePDF.getPreview(arquivoBuffer));
+		  
+		  exibirDados(arquivoBuffer);
+
+		  setMessageKey("OK", "pdf.sucesso");
+		  RequestContext.getCurrentInstance().execute("PF('dialogCarregaPaper').hide();");
+	  }catch(Exception e){
+		  setMessageChar("ERRO", e.getMessage()); 
+		  RequestContext.getCurrentInstance().execute("PF('dialogCarregaPaper').hide();");
+	  }	  
+	}
+
+
+	
+	private void exibirDados(ByteBuffer arquivoBuffer) throws Exception{
+		System.out.println("entrou = exibir dados pdf");
+		filePDF.getMetaDados(arquivoBuffer);
+	      
+		if (filePDF.getPaper() != null){
+			Paper tempPaper = filePDF.getPaper();
+			
+			paper.setTitle(tempPaper.getTitle());	
+			paper.setSummary(tempPaper.getSummary());
+			if (!tempPaper.getKeywords().isEmpty()){				
+			for(int cont=0 ; cont< tempPaper.getKeywords().size() ; cont++){
+				Keyword tempKeyword = new Keyword();
+				tempKeyword.setWord(tempPaper.getKeywords().get(cont).getWord());
+				paperControllerKeyword.setKeyword(tempKeyword);
+				paperControllerKeyword.cadastrarKeyword();
+	         }	
+			}
+			
+			//busca semantica
+			tempPaper = paperService.getPaperWeb(tempPaper.getTitle());
+			
+			paper.setUrlPaper(tempPaper.getUrlPaper());
+			paper.setYear(tempPaper.getYear());
+			setJournal(tempPaper.getJournal());			
+
+			if (!tempPaper.getAuthors().isEmpty()){	
+				for(int cont=0 ; cont< tempPaper.getAuthors().size() ; cont++){					
+					Author tempAuthor = new Author();
+					tempAuthor.setName(tempPaper.getAuthors().get(cont).getName());			
+					paperControllerAuthor.setAuthor(tempAuthor);
+					paperControllerAuthor.cadastrarAuthor();
+		         }	
+			}
+			
+		}
+	}
+	
+	public void exibirArquivo() throws Exception{
+		filePDF.exibirPdf(arquivoByte);		
+	}
+
 
 	
 }

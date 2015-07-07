@@ -11,6 +11,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import searchpapers.domain.Estado;
+import searchpapers.domain.Paper;
 import searchpapers.domain.Usuario;
 import searchpapers.domain.Usuario_;
 
@@ -55,7 +57,9 @@ public class UsuarioJPADAO implements UsuarioDAO {
 		}
 
 	public Usuario salvar(Usuario object) {
-		entityManager.persist(object);
+		
+		if (object.isPersistent()) entityManager.merge(object);
+		else entityManager.persist(object);
 		
 		return object;
 	}
@@ -68,4 +72,26 @@ public class UsuarioJPADAO implements UsuarioDAO {
 		return (List<Usuario>) entityManager.createQuery(cq).getResultList();
 	}
 	
+	public List<Usuario> getUsuarios(){
+
+		String jpql = "select p from Usuario p ORDER BY p.nome ASC";
+		TypedQuery<Usuario> query = (TypedQuery<Usuario>) entityManager.createQuery(jpql, Usuario.class);
+	    
+		return query.getResultList();		
+	}
+	
+	public Usuario getById(Long id){
+		Usuario result = (Usuario) entityManager.find(Usuario.class, id);		
+		return result;
+	}
+	
+	public List<Usuario> getUsuarioByPaper(Long id){
+
+		String jpql = "select u from Paper p join p.usuarios u where p.id = :id";
+		TypedQuery<Usuario> query = entityManager.createQuery(jpql, Usuario.class);
+		query.setParameter("id", id);
+	    
+		return query.getResultList();		
+	}
+
 }

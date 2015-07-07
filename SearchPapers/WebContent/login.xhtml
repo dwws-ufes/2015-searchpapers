@@ -20,35 +20,35 @@
      </div>
             
      <div class="post_box"> 
-     <h:form> 
+     <h:form id="frmLogin"> 
      <p:growl id="msgOk" showDetail="false" />
      
      <h:panelGrid columns="2">
 	 		
-	 		<p:fieldset toggleable="true" toggleSpeed="500">
-	 		<h3>Já sou cadastrado?</h3>
+	 		<p:fieldset id="tabLogin" toggleable="true" toggleSpeed="500">
+	 		
+	 		 <h:panelGrid columns="2" style="text-align: center" >
+	 		   <h3>Já sou cadastrado?</h3>
+	 		   <p:commandLink id="novo" action="#{usuarioController.novo}" ajax="false" immediate="true">
+                 <h:outputText value="Quero me cadastrar!" />
+               </p:commandLink>	
+	 		</h:panelGrid>
+	 			 	
 	 	  <h:panelGrid columns="2"> 
 	 	    <p:outputLabel for="nomeUsuario" value="Nome Usuário:" /> 
 	 	    <p:inputText id="nomeUsuario" value="#{usuarioController.usuario.nome}" /> 
 	 	    <p:outputLabel for="senha" value="Senha:" /> 
 	 	    <p:password id="senha" value="#{usuarioController.usuario.senha}" /> 
 	 	    <p:commandButton value="Login" icon="ui-icon-star" action="#{usuarioController.login}" ajax="false"> </p:commandButton> 
+	 	    
+	 	    <br/>
+              	   	     
+    
 	 	  </h:panelGrid> 
 	 	  </p:fieldset>
 	 	  
 
-	 	  <p:fieldset toggleable="true" toggleSpeed="500">
-	 		<h3>Quero me cadastratar?</h3>
-	 	  <h:panelGrid columns="2"> 
-	 	    <p:outputLabel for="nomeUsuario2" value="Nome Usuário:" /> 
-	 	    <p:inputText id="nomeUsuario2" value="#{usuarioController.usuarioCadastro.nome}" /> 
-	 	    <p:outputLabel for="senha2" value="Senha:" /> 
-	 	    <p:password id="senha2" value="#{usuarioController.usuarioCadastro.senha}" /> 
-	 	    <p:commandButton value="Login" icon="ui-icon-star" action="#{usuarioController.salvar}" ajax="false"> </p:commandButton> 
-	 	  </h:panelGrid> 
 	 	  
-	 	  
-	 	  </p:fieldset>
 	 </h:panelGrid>	  
 	 	  
  		</h:form>

@@ -11,4 +11,5 @@ public class Author_ extends PersistentObjectSupport_ {
 	public static volatile SingularAttribute<Author, String> name;
 	public static volatile SingularAttribute<Author, String> email;
 	public static volatile SingularAttribute<Author, Institute> institute;
+	public static volatile SingularAttribute<Author, byte[]> arquivoFoto;
 }

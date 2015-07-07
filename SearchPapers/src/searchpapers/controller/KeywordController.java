@@ -22,11 +22,9 @@ import searchpapers.message.MessageController;
 @SessionScoped
 public class KeywordController extends MessageController implements Serializable {	
 
-	@EJB
-	private KeywordService keywordService;
+	@EJB private KeywordService keywordService;
 	
-	@EJB
-	private PaperService paperService;
+	@EJB private PaperService paperService;
 	
 	protected boolean readOnly = false;
 	
@@ -199,10 +197,10 @@ public class KeywordController extends MessageController implements Serializable
 			  if ( papers.isEmpty() ){
 				  keywordService.deletar(keyword); 
 				  deletarArray(keyword);			  
-				  setMessageKey("OK", "del.sucesso");
+				  setMessageKey("OK", "keyword.del.sucesso");
 			  }
 			  else {
-				  setMessageKey("ERRO", "del.ex_relacao");
+				  setMessageKey("ERRO", "keyword.del.ex_relacao");
 			  } 
 		  }
 		}
@@ -220,19 +218,18 @@ public class KeywordController extends MessageController implements Serializable
 				if ( list.isEmpty()){	
 					keywordService.salvar(keyword); 
 					addArray(keyword);	
-					setMessageKey("OK", "cad.sucesso");
+					setMessageKey("OK", "keyword.cad.sucesso");
 				}
 				else{
 					setKeyword(list.get(0));
 					addArray(list.get(0));	
-					setMessageKey("ERRO", "obj.ja_cadastrado");	
+					setMessageKey("ERRO", "keyword.ja_cadastrado");	
 				}
 			}
 			else{
 				keywordService.salvar(keyword); 
-				setMessageKey("OK", "atu.sucesso");
-			}
-				
+				setMessageKey("OK", "keyword.atu.sucesso");
+			}				
 		}
 		catch(Exception e){
 			setMessageKey("ERRO", e.getMessage());  

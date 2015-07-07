@@ -13,4 +13,7 @@ public class Paper_ {
 	public static volatile SingularAttribute<Paper, String> summary;
 	public static volatile SingularAttribute<Paper, List<Author>> authors;
 	public static volatile SingularAttribute<Paper, List<Keyword>> keywords;
+	public static volatile SingularAttribute<Paper, byte[]> arquivoPdf;
+	public static volatile SingularAttribute<Paper, Journal> journal;
+	public static volatile SingularAttribute<Paper, String> urlPaper;
 }

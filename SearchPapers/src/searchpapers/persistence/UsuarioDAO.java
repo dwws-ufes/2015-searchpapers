@@ -10,9 +10,14 @@ import searchpapers.domain.Usuario;
 @Local
 public interface UsuarioDAO {
 	
-	Usuario getUsuario(String nome, String senha);
-	boolean inserirUsuario(Usuario usuario);
-	boolean deletarUsuario(Usuario usuario);
 	Usuario salvar(Usuario object);
+	boolean deletarUsuario(Usuario usuario);
+	boolean inserirUsuario(Usuario usuario);
+	
+	Usuario getUsuario(String nome, String senha);	
+	List<Usuario> getUsuarios();
 	List<Usuario> getByName(String name);
+	Usuario getById(Long id);
+	List<Usuario> getUsuarioByPaper(Long id);
+	
 }

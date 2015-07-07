@@ -18,4 +18,6 @@ public interface InstituteService {
 	 List<Institute> getByLikeName(String name);
 	 Institute getById(Long id);
 	 //Institute getByAuthor(Institute institute);
+	 
+	 Institute getInstituteWeb(String name);
 }

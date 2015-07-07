@@ -9,7 +9,6 @@ import javax.faces.context.FacesContext;
 public class MessageController {
 	
 	
-	
 	private void setMessage(String tipo, String key, String msg){
 
 		final String stipo;
@@ -27,7 +26,7 @@ public class MessageController {
 			case "ERRO": stipo = "MsgErro"; break;
 			default: stipo = "MsgOk";
 		}
-			
+
 		context.addMessage(stipo, new FacesMessage(msg));
 	}
 	

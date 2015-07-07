@@ -21,13 +21,20 @@
 			<br/>
 
 			<p>
-				<h:panelGrid columns="2">
-			    	<h:outputLabel for="name">Id:</h:outputLabel>
+				<h:panelGrid columns="3">
+			    	<h:outputLabel for="id">Id:</h:outputLabel>
 					<h:inputText id="id" value="#{instituteController.institute.id}" size="30" readonly="true" />
+					<p:message for="id" />
+					
 					<h:outputLabel for="name">Name:</h:outputLabel>
-					<h:inputText id="name" value="#{instituteController.institute.name}" size="30" readonly="#{instituteController.readOnly}" required="true" label="name" requiredMessage="É necessário preencher o nome da Instituição." />
-								
-					<br/> <p:message for="name" />							
+					<h:inputText id="name" value="#{instituteController.institute.name}" size="30" readonly="#{instituteController.readOnly}" required="true" label="name" requiredMessage="É necessário preencher o nome da Instituição." >
+					  <f:ajax event="blur" listener="#{instituteController.carregaInformacaoWeb}" execute="@this" render="webAdress"  />
+					</h:inputText>
+				    <p:message for="name" />	
+					
+					<h:outputLabel for="webAdress">Web Adress:</h:outputLabel>
+					<h:inputText id="webAdress" value="#{instituteController.institute.webAdress}" size="30" readonly="#{instituteController.readOnly}" required="true" label="name" requiredMessage="É necessário preencher o web adress da Instituição." />
+					<p:message for="webAdress" />						
 				</h:panelGrid>
 			</p>
 			

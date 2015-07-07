@@ -1,15 +1,25 @@
 package searchpapers.controller;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.Serializable;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.TreeMap;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.rdf.model.Literal;
 
 import searchpapers.application.AuthorService;
 import searchpapers.application.InstituteService;
@@ -21,11 +31,10 @@ import searchpapers.message.MessageController;
 @Named
 @SessionScoped
 public class InstituteController extends MessageController implements Serializable {
-	@EJB
-	private InstituteService instituteService;
 	
-	@EJB
-	private AuthorService authorService;
+	@EJB private InstituteService instituteService;
+	
+	@EJB private AuthorService authorService;
     
 	private Institute institute = new Institute();
 	
@@ -76,35 +85,35 @@ public class InstituteController extends MessageController implements Serializab
 	}
 	
 	//-------------------------------
-		// Tratamento do array para exibir na tela as alteracoes
-		
-		
-		public List<Institute> getArrayInstitutes() {
-			return new ArrayList<Institute>(arrayInstitutes.values());
+	// Tratamento do array para exibir na tela as alteracoes
+	
+	
+	public List<Institute> getArrayInstitutes() {
+		return new ArrayList<Institute>(arrayInstitutes.values());
+	}
+	
+	public void addArray(Institute k) {
+		arrayInstitutes.put(k.getId(), k);
+	}
+	
+	public void deletarArray(Institute k) {
+		arrayInstitutes.remove(k.getId());
+	}
+	
+	public void listarArray(){
+		for (int i = 0; i < institutes.size(); i++) {
+			arrayInstitutes.put(institutes.get(i).getId(), institutes.get(i));
 		}
+	}
+	///----------------------------
 		
-		public void addArray(Institute k) {
-			arrayInstitutes.put(k.getId(), k);
-		}
+	@Inject
+	public String listar(){
+		institutes = instituteService.getInstitutes();
+		listarArray();
 		
-		public void deletarArray(Institute k) {
-			arrayInstitutes.remove(k.getId());
-		}
-		
-		public void listarArray(){
-			for (int i = 0; i < institutes.size(); i++) {
-				arrayInstitutes.put(institutes.get(i).getId(), institutes.get(i));
-			}
-		}
-		///----------------------------
-		
-		@Inject
-		public String listar(){
-			institutes = instituteService.getInstitutes();
-			listarArray();
-			
-			return "/Institute/listInstitute.xhtml";
-		}
+		return "/Institute/listInstitute.xhtml";
+	}
 		
 	
 	public String salvar(Institute Institute){
@@ -112,13 +121,13 @@ public class InstituteController extends MessageController implements Serializab
 
 		  if (Institute.getId()== null){
 		    instituteService.salvar(institute); 
-		    institutes.add(institute);;
-		    setMessageKey("OK", "cad.sucesso");	
+		    institutes.add(institute);
+		    setMessageKey("OK", "institute.cad.sucesso");	
 		    listar();		    
 		  }
 		  else{
 		    instituteService.atualizar(institute); 
-		    setMessageKey("OK", "atu.sucesso");			    
+		    setMessageKey("OK", "institute.atu.sucesso");			    
 		  }
 		  Institute = new Institute();
 		}
@@ -133,7 +142,7 @@ public class InstituteController extends MessageController implements Serializab
 	public void deletar(){		
 		try{
 			  if (institute.getId()== null){
-				  setMessageKey("ERRO", "obj.nao_localizado");			   
+				  setMessageKey("ERRO", "institute.nao_localizado");			   
 			  }
 			  else{
 				  List<Author> authors = authorService.getByInstitute(institute);
@@ -141,10 +150,10 @@ public class InstituteController extends MessageController implements Serializab
 				  if ( authors.isEmpty() ){
 					  instituteService.deletar(institute); 
 					  deletarArray(institute);			  
-					  setMessageKey("OK", "del.sucesso");
+					  setMessageKey("OK", "institute.del.sucesso");
 				  }
 				  else {
-					  setMessageKey("ERRO", "del.ex_relacao");
+					  setMessageKey("ERRO", "institute.del.ex_relacao");
 				  } 
 			  }
 			}
@@ -233,7 +242,7 @@ public class InstituteController extends MessageController implements Serializab
 	
 	public String editar(){
 		 if (institute.getId()== null){
-			  setMessageKey("ERRO", "obj.nao_localizado");			   
+			  setMessageKey("ERRO", "institute.nao_localizado");			   
 		  }
 		 else{
 		   readOnly = false;		
@@ -246,5 +255,17 @@ public class InstituteController extends MessageController implements Serializab
 		setMessageChar("OK", "teste");
 		//this.Institute = Institute;
 		return "";
+	}
+	
+	
+	public void carregaInformacaoWeb() throws IOException, URISyntaxException{ 
+		try{
+			String name = institute.getName();			
+			institute = instituteService.getInstituteWeb(name);
+		
+		}catch(Exception e){
+			System.out.println("erro no carregaInformacaoWeb "+e.getMessage()); 
+			setMessageChar("ERRO", e.getMessage());  
+		}		
 	}
 }

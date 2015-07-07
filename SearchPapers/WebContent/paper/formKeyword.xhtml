@@ -1,0 +1,56 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+      
+      
+<h:form id="frmKeyword">
+<p:growl id="msgOk" showDetail="false" />
+
+	<p:panelGrid id="tabKeyword" styleClass="panelGridBorder">	            
+           	<p:row>
+		        <p:column style="width:5%">
+					<h:outputLabel for="word">Word:</h:outputLabel>
+				</p:column>
+				<p:column>
+					<h:inputText id="word" value="#{paperControllerKeyword.keyword.word}" size="75" required="true" label="word" requiredMessage="É necessário preencher word"/>				
+				</p:column>
+			    <p:column style="width:30%"> 				
+					<p:commandButton value="Add Keyword" id="submitKeyword" icon="ui-icon-disk">	
+					  <f:ajax listener="#{paperControllerKeyword.cadastrarKeyword}" execute="@form" render="frmKeyword :tabKeywords" event="click"/>	
+					</p:commandButton>	
+				</p:column>
+		    </p:row>
+		    <p:row>
+				<p:column colspan="3">	
+					<p:message for="word" />
+				</p:column>
+			</p:row>	
+	</p:panelGrid>
+		<br/>
+		
+		<p:dataTable id="tabKeywords" 
+				 value="#{paperControllerKeyword.arrayKeywords}" 
+				 var="keyword" 
+				 rendered="#{paperControllerKeyword.arrayKeywords.size() > 0}" 
+				 style="width:100%" border="0" cellspacing="0">
+			<p:column headerText="Id" style="width:5%">
+				<h:outputText value="#{keyword.id}" />
+			</p:column>
+			<p:column headerText="Word">
+				<h:outputText value="#{keyword.word}" />
+			</p:column>
+			<p:column headerText="Remove" style="width:10%; text-align:center;">				
+				<p:commandButton icon="ui-icon-closethick" >	
+				  <f:ajax listener="#{paperControllerKeyword.deletarKeyword(keyword)}" 
+				  		  execute="@this" 
+				  		  render="frmKeyword :tabKeywords" 
+				  		  event="click"
+				  		  immediate="true"/>		
+				</p:commandButton>	
+			</p:column>
+	</p:dataTable> 
+</h:form>		
+      
+</ui:composition>      

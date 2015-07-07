@@ -1,0 +1,68 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                >
+
+    
+      		
+  <h:form id="filterForm">
+	 <p:growl id="msgOk" showDetail="false" />
+
+     <!-- Filter bar: used to filter the listing (displayed when there is at least one filter available). -->
+     	<h:panelGroup id="filterBar" >
+			<div class="crudFilterBar">
+		    	<h:panelGrid id="fields" columns="10" >
+		        	<h:outputText value="#{msgs['crud.text.filter']} " />
+		            <p:selectOneMenu id="filter" value="#{recomendacaoController.filter}" style="width:125px">
+						<f:selectItem itemLabel="" itemValue="" />
+						<f:selectItem itemLabel="ID" itemValue="id" />
+						<f:selectItem itemLabel="Título do artigo" itemValue="tituloArtigo" />
+						<f:selectItem itemLabel="Mensagem" itemValue="mensagem" />
+						<f:ajax event="change" execute="@form" render="@form :listingForm :buttonsForm" />
+					</p:selectOneMenu>
+		            <h:outputText value=": " />&nbsp;
+		                        
+		            <p:inputText id="filterText" size="20" required="false" value="#{recomendacaoController.valorFiltro}" />&nbsp;
+		                        
+		            <h:commandButton id="filtrar" action="#{recomendacaoController.filtrar}" value="Pesquisar" validateClient="true" ajax="false" />&nbsp;		            
+		            <h:commandButton id="cancelar" action="#{recomendacaoController.cancelarFiltro}" value="Cancelar filtro" immediate="true" />
+		            <p:hotkey bind="#{msgs['crud.hotkey.filterFocus']}" handler="if (findObjectById('filterForm:filterText') != null) findObjectById('filterForm:filterText').focus();" />
+		                   
+		        </h:panelGrid>
+		        <br/>
+		     </div>
+	   </h:panelGroup>
+  </h:form>
+        
+        <h:form id="listingForm"> 
+        <p:growl id="msgOk" showDetail="false" />
+        <p:dataGrid id="dgRecomendacaoList" style="border-style: none !important" value="#{recomendacaoController.arrayRecomendacoes}" var="recomendacao" columns="1">
+        
+	        <p:panel style="width:100%">
+		    	<h:panelGrid id="pgRecomendacaoList" columns="2" >
+		    		<h:panelGrid columns="2" style="width:5%"> 
+				      	<h:commandLink id="clVisualizar" action="#{paperControllerList.exibirArquivo(recomendacao.paper.arquivoPdf)}" target="_blank" ajax="false" >
+						<p:commandButton ajax="false" icon="ui-icon-document"/>
+						</h:commandLink>  			
+						<p:commandButton id="cbDeletar" action="#{recomendacaoController.deletar(recomendacao.id)}" icon="ui-icon-closethick" ajax="false" />			
+					</h:panelGrid>
+					<h:panelGrid columns="2">
+						<h:outputLabel for="title">Title:</h:outputLabel>
+						<h:outputText id="title"  value="#{recomendacao.paper.title}" />
+						<h:outputLabel for="remetente">Remetente:</h:outputLabel>
+						<h:outputText id="remetente" value="#{recomendacao.remetente.nome}" />
+						<h:outputLabel for="mensagem">Mensagem:</h:outputLabel>
+						<h:outputText id="mensagem" value="#{recomendacao.mensagem}" />
+					</h:panelGrid>
+		
+			    </h:panelGrid>
+	  		</p:panel> 
+        </p:dataGrid>
+        
+        </h:form>
+        
+</ui:composition>       
+              

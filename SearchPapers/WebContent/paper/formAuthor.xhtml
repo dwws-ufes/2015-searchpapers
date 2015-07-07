@@ -1,0 +1,89 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:form id="frmAuthor">    
+<p:growl id="msgOk" showDetail="false" />  
+	<p:panelGrid id="tabAuthor" styleClass="panelGridBorder">	            
+           	<p:row>
+		        <p:column style="width:5%">
+					<h:outputLabel for="name">Name:</h:outputLabel>
+				</p:column>
+				<p:column>
+					<h:inputText id="name" value="#{paperControllerAuthor.author.name}" size="75" required="true" label="name" requiredMessage="É necessário preencher o nome."/>
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel for="email">E-mail:</h:outputLabel>
+				</p:column>
+				<p:column>
+					<h:inputText id="email" value="#{paperControllerAuthor.author.email}" size="75" label="email" validatorMessage="Não é um endereço de email válido!">
+						  <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />	
+					</h:inputText> 
+				</p:column>
+			</p:row>	
+			<p:row>
+				<p:column>
+					<h:outputLabel for="institute">Institute:</h:outputLabel>
+				</p:column>
+				<p:column>
+					<h:inputText id="institute" value="#{paperControllerAuthor.institute.name}" size="75" required="false" label="name"/>
+				</p:column>				
+
+			    <p:column style="width:30%"> 				
+					<p:commandButton value="Add Author" id="submitAuthor" icon="ui-icon-disk">	
+					  <f:ajax listener="#{paperControllerAuthor.cadastrarAuthor}" execute="@form" render="frmAuthor :tabAuthors" event="click"/>	
+					</p:commandButton>	
+				</p:column>
+		    </p:row>
+		    <p:row>
+				<p:column colspan="3">	
+					<p:message for="name" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column colspan="3">	
+					<p:message for="email" />
+				</p:column>
+			</p:row>
+	</p:panelGrid>
+		
+ 
+ 		<br/>
+        <p:dataTable id="tabAuthors" 
+        			 value="#{paperControllerAuthor.arrayAuthors}" 
+        			 var="author" 
+        			 rendered="#{paperControllerAuthor.arrayAuthors.size() > 0}" 
+        			 style="width:100%" border="1" cellspacing="0">
+			<p:column headerText="Id" style="width:5%">
+				<h:outputText value="#{author.id}" />
+			</p:column>
+			<p:column headerText="Nome" style="width:30%">
+				<h:outputText value="#{author.name}" />
+			</p:column>
+			<p:column headerText="E-mail" style="width:30%">
+				<h:outputText value="#{author.email}" />
+			</p:column>
+			<p:column headerText="Instituto" style="width:20%">
+				<h:outputText value="#{author.institute.name}" />
+			</p:column>
+			<p:column headerText="Id" style="width:5%">
+				<h:outputText value="#{author.institute.id}" />
+			</p:column>					
+			<p:column headerText="Remove" style="width:10%; text-align:center;">				
+				<p:commandButton icon="ui-icon-closethick" >	
+				  <f:ajax listener="#{paperControllerAuthor.deletarAuthor(author)}" 
+				  		  execute="@this" 
+				  		  render="frmAuthor :tabAuthors" 
+				  		  event="click"
+				  		  immediate="true"/>		
+				</p:commandButton>	
+			</p:column>
+			
+		</p:dataTable>
+</h:form>	
+
+</ui:composition>
